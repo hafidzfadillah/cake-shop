@@ -17,7 +17,9 @@ class TransactionController extends Controller
         }
 
         $transactions = Transaction::where('cust_id', $customer->cust_id)
-            ->with('transactionItems.product')
+            ->with('transactionItems.product', function ($query) {
+                $query->withTrashed();
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
