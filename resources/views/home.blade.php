@@ -32,7 +32,7 @@
                     <p class="text-gray-600 text-sm mb-2">{{ Str::limit($product->prod_desc, 100) }}</p>
                     <div class="flex justify-between items-center">
                         <div>
-                            @if($product->prod_price_promo < $product->prod_price)
+                            @if($product->prod_price_promo != 0 && $product->prod_price_promo < $product->prod_price)
                             <p class="text-gray-500 line-through">Rp {{ number_format($product->prod_price) }}</p>
                             <p class="text-lg font-bold text-red-600">Rp {{ number_format($product->prod_price_promo) }}</p>
                             @else

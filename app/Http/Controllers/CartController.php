@@ -18,11 +18,16 @@ class CartController extends Controller
         }
 
         $cartItems = ShopCart::where('cust_id', $customer->cust_id)
-            ->with('product')
+            ->with('product', function ($query) {
+                $query->withTrashed();
+            })
             ->get();
 
         $total = $cartItems->sum(function($item) {
-            return $item->item_qty * ($item->product->prod_price_promo ?: $item->product->prod_price);
+            if (!$item->product || $item->product->deleted_at) {
+                return 0;
+            }
+            return $item->item_qty * ($item->product->prod_price_promo != 0 ? $item->product->prod_price_promo : $item->product->prod_price);
         });
 
         return view('cart.index', compact('cartItems', 'total'));
