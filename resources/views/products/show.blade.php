@@ -9,7 +9,8 @@
         <div class="md:w-1/2">
             <img src="{{ $product->prod_img_url }}"
                  alt="{{ $product->prod_name }}"
-                 class="w-full h-96 object-cover">
+                 class="w-full h-96 object-cover"
+                 loading="lazy">
         </div>
 
         <!-- Product Details -->
@@ -78,7 +79,8 @@
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <img src="{{ $relatedProduct->prod_img_url }}"
                      alt="{{ $relatedProduct->prod_name }}"
-                     class="w-full h-48 object-cover">
+                     class="w-full h-48 object-cover"
+                     loading="lazy">
                 <div class="p-4">
                     <h3 class="font-semibold text-lg mb-2">{{ $relatedProduct->prod_name }}</h3>
                     <div class="flex justify-between items-center">

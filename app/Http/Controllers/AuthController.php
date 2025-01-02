@@ -31,12 +31,22 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            // Redirect based on user role
+            return $this->redirectBasedOnRole();
         }
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ])->withInput($request->only('email'));
+    }
+
+    // New method to handle role-based redirects
+    private function redirectBasedOnRole()
+    {
+        if (Auth::user()->is_admin) {  // Assuming you have an is_admin column
+            return redirect()->route('admin.dashboard');  // Route to admin dashboard
+        }
+        return redirect()->intended('/');  // Default route for regular users
     }
 
     public function showRegistrationForm()
