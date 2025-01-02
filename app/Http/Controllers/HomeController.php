@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductCategory;
 
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+
 class HomeController extends Controller
 {
     public function index()

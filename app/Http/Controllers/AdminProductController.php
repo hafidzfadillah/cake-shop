@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AdminProductController extends Controller
 {
@@ -29,19 +30,43 @@ class AdminProductController extends Controller
             'prod_price_promo' => 'nullable|numeric',
             'prod_stock' => 'required|integer',
             'prod_category_id' => 'required|exists:tb_prod_category,prod_category_id',
-            'prod_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prod_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $product = new Product($request->except('prod_image'));
+        try{
+            $uploadedFile = cloudinary()->upload($request->file('prod_image')->getRealPath(), [
+                'folder'=>'cake-shop/products'
+            ]);
 
-        if ($request->hasFile('prod_image')) {
-            $path = $request->file('prod_image')->store('products', 'public');
-            $product->prod_img_url = $path;
+
+            // Create product with all data including the Cloudinary URL
+            $product = Product::create([
+                'prod_name' => $request->prod_name,
+                'prod_desc' => $request->prod_desc,
+                'prod_price' => $request->prod_price,
+                'prod_price_promo' => $request->prod_price_promo,
+                'prod_stock' => $request->prod_stock,
+                'prod_img_url' => $uploadedFile->getSecurePath(),
+                'prod_category_id' => $request->prod_category_id,
+                'cloudinary_public_id' => $uploadedFile->getPublicId() // Store this for future deletion
+            ]);
+
+            $product->save();
+
+            return redirect()->route('admin.products')->with('success', 'Product added successfully.');
+        } catch(\Exception $e) {
+            return redirect()->route('admin.create')->with('error', $e->getMessage());
         }
 
-        $product->save();
+        // $product = new Product($request->except('prod_image'));
 
-        return redirect()->route('admin.products')->with('success', 'Product added successfully.');
+        // if ($request->hasFile('prod_image')) {
+        //     $path = $request->file('prod_image')->store('products', 'public');
+        //     $product->prod_img_url = $path;
+        // }
+
+        // $product->save();
+
     }
 
     public function edit($id)
@@ -60,20 +85,34 @@ class AdminProductController extends Controller
             'prod_price_promo' => 'nullable|numeric',
             'prod_stock' => 'required|integer',
             'prod_category_id' => 'required|exists:tb_prod_category,prod_category_id',
-            'prod_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'prod_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $product = Product::findOrFail($id);
-        $product->fill($request->except('prod_image'));
+        try{
+            $product = Product::findOrFail($id);
+            $product->fill($request->except('prod_image'));
 
-        if ($request->hasFile('prod_image')) {
-            $path = $request->file('prod_image')->store('products', 'public');
-            $product->prod_img_url = $path;
+            if ($request->hasFile('prod_image')) {
+                // Delete old image if exists
+                if ($product->cloudinary_public_id) {
+                    cloudinary()->destroy($product->cloudinary_public_id);
+                }
+
+                // Upload new image
+                $uploadedFile = cloudinary()->upload($request->file('prod_image')->getRealPath(), [
+                    'folder' => 'cake-shop/products'
+                ]);
+
+                $product['prod_img_url'] = $uploadedFile->getSecurePath();
+                $product['cloudinary_public_id'] = $uploadedFile->getPublicId();
+            }
+
+            $product->update($request->all());
+
+            return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
+        } catch(\Exception $e) {
+            return redirect()->route('admin.edit')->with('error', $e->getMessage());
         }
-
-        $product->save();
-
-        return redirect()->route('admin.products')->with('success', 'Product updated successfully.');
     }
 
     public function destroy($id)

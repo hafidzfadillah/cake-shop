@@ -11,7 +11,7 @@
             @foreach($categories as $category)
             <a href="{{ route('category.products', $category->prod_category_id) }}"
                class="bg-white rounded-lg shadow p-4 hover:shadow-lg transition">
-                <h3 class="font-semibold text-lg">{{ $category->cat_name }}</h3>
+                <h3 class="font-semibold text-lg">{{ $category->prod_category_name }}</h3>
                 <p class="text-gray-600 text-sm">{{ $category->products_count }} products</p>
             </a>
             @endforeach
@@ -26,7 +26,8 @@
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <img src="{{ $product->prod_img_url }}"
                      alt="{{ $product->prod_name }}"
-                     class="w-full h-48 object-cover">
+                     class="w-full h-48 object-cover"
+                     loading="lazy">
                 <div class="p-4">
                     <h3 class="font-semibold text-lg mb-2">{{ $product->prod_name }}</h3>
                     <p class="text-gray-600 text-sm mb-2">{{ Str::limit($product->prod_desc, 100) }}</p>

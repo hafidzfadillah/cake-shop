@@ -14,7 +14,8 @@
                         @if($item->product)
                             <img src="{{ $item->product->prod_img_url }}"
                                  alt="{{ $item->product->prod_name }}"
-                                 class="w-20 h-20 object-cover rounded">
+                                 class="w-20 h-20 object-cover rounded"
+                                 loading="lazy">
                             <div>
                                 <h3 class="font-semibold">{{ $item->product->prod_name }}</h3>
                                 <p class="text-gray-600">

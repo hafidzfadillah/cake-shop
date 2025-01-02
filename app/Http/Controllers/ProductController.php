@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
 {
@@ -38,12 +39,31 @@ class ProductController extends Controller
             'prod_price' => 'required|integer',
             'prod_price_promo' => 'required|integer',
             'prod_stock' => 'required|integer',
-            'prod_img_url' => 'required|string',
+            'prod_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'prod_category_id' => 'required|exists:tb_prod_category,prod_category_id'
         ]);
 
-        $product = Product::create($request->all());
-        return response()->json($product, 201);
+        try{
+            $uploadedFile = cloudinary()->upload($request->file('prod_image')->getRealPath(), [
+                'folder'=>'cake-shop/products'
+            ])->getSecurePath();
+
+
+            // Create product with all data including the Cloudinary URL
+            $product = Product::create([
+                'prod_name' => $request->prod_name,
+                'prod_desc' => $request->prod_desc,
+                'prod_price' => $request->prod_price,
+                'prod_price_promo' => $request->prod_price_promo,
+                'prod_stock' => $request->prod_stock,
+                'prod_img_url' => $uploadedFile,
+                'prod_category_id' => $request->prod_category_id,
+                'cloudinary_public_id' => $uploadedFile->getPublicId() // Store this for future deletion
+            ]);
+            return response()->json($product, 201);
+        } catch(\Exception $e) {
+            return response()->json(['error'=>$e->getMessage()],500);
+        }
     }
 
     /**
@@ -74,14 +94,35 @@ class ProductController extends Controller
             'prod_price' => 'integer',
             'prod_price_promo' => 'integer',
             'prod_stock' => 'integer',
-            'prod_img_url' => 'string',
+            'prod_image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048', // Changed validation
             'prod_category_id' => 'exists:tb_prod_category,prod_category_id'
         ]);
 
-        $product = Product::findOrFail($id);
-        $product->update($request->all());
+        try{
+            $product = Product::findOrFail($id);
+            $data = $request->except('prod_image');
 
-        return response()->json($product);
+            if($request->hasFile('prod_image')) {
+                // Delete old image if exists
+                if ($product->cloudinary_public_id) {
+                    Cloudinary::destroy($product->cloudinary_public_id);
+                }
+
+                // Upload new image
+                $uploadedFile = Cloudinary::upload($request->file('prod_image')->getRealPath(), [
+                    'folder' => 'cake-shop/products'
+                ]);
+
+                $data['prod_img_url'] = $uploadedFile->getSecurePath();
+                $data['cloudinary_public_id'] = $uploadedFile->getPublicId();
+            }
+
+            $product->update($request->all());
+            return response()->json($product);
+        } catch(\Exception $e) {
+            return response()->json(['error'=>$e->getMessage()],500);
+        }
+
     }
 
     /**
@@ -89,10 +130,19 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
-        $product->delete();
+        try {
+            $product = Product::findOrFail($id);
 
-        return response()->json(null, 204);
+            // Delete image from Cloudinary if exists
+            if ($product->cloudinary_public_id) {
+                Cloudinary::destroy($product->cloudinary_public_id);
+            }
+
+            $product->delete();
+            return response()->json(null, 204);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function showCategories()
