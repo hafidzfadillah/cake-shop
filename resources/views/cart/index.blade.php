@@ -12,7 +12,7 @@
                 <div class="flex items-center justify-between border-b pb-4">
                     <div class="flex items-center space-x-4 relative">
                         @if($item->product)
-                            <img src="{{ $item->product->prod_img_url }}"
+                            <img src="{{ asset('uploads/'.$item->product->image) }}"
                                  alt="{{ $item->product->prod_name }}"
                                  class="w-20 h-20 object-cover rounded"
                                  loading="lazy">

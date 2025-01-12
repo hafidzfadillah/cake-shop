@@ -7,7 +7,7 @@
     <div class="md:flex">
         <!-- Product Image -->
         <div class="md:w-1/2">
-            <img src="{{ $product->prod_img_url }}"
+            <img src="{{ asset('uploads/'.$product->image) }}"
                  alt="{{ $product->prod_name }}"
                  class="w-full h-96 object-cover"
                  loading="lazy">
@@ -77,7 +77,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         @foreach($product->category->products->where('prod_id', '!=', $product->prod_id)->take(4) as $relatedProduct)
             <div class="bg-white rounded-lg shadow overflow-hidden">
-                <img src="{{ $relatedProduct->prod_img_url }}"
+                <img src="{{ asset('uploads/'.$relatedProduct->image) }}"
                      alt="{{ $relatedProduct->prod_name }}"
                      class="w-full h-48 object-cover"
                      loading="lazy">

@@ -12,10 +12,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
-                <a href="/" class="text-xl font-bold flex items-center">
-                    <img src="/path-to-logo.png" alt="Bites of Bliss Logo" class="h-8 w-auto mr-2">
+                <a href="/" class="text-base font-bold flex items-center">
+                    <img src="{{ asset('assets/logo.png') }}" alt="Bites of Bliss Logo" class="h-20 w-auto mr-2">
                     Bites of Bliss
                 </a>
+
                 <!-- Navigation -->
                 <div class="hidden md:flex space-x-6">
 
@@ -44,7 +45,7 @@
             <div class="flex flex-col md:flex-row items-center md:space-x-10">
                 <!-- Image Section -->
                 <div class="flex justify-center">
-                    <img src="/path-to-cake-images.png" alt="Cakes" class="h-64 w-auto rounded-lg shadow-lg">
+                    <img src="{{ asset('assets/cakebg.png') }}" alt="Cakes" class="h-64 w-auto rounded-lg shadow-lg">
                 </div>
                 <!-- Text Section -->
                 <div class="text-center md:text-left mt-8 md:mt-0">
