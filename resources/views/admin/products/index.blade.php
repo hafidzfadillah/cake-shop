@@ -35,7 +35,7 @@
             @endphp
             <div class="bg-white p-6 rounded-lg shadow">
                 <div class="flex justify-center items-center">
-                    <img src="{{ $product->prod_img_url }}" alt="{{ $product->prod_name }}" class="w-32 h-32 object-cover" loading="lazy">
+                    <img src="{{ asset('uploads/'.$product->image) }}" alt="{{ $product->prod_name }}" class="w-32 h-32 object-cover" loading="lazy">
                 </div>
                 <h3 class="font-bold text-lg mb-2">{{ $product->prod_name }}</h3>
                 <div class="mb-2">

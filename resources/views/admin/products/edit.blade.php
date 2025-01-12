@@ -77,27 +77,10 @@
                 </div>
             </div>
 
-            <div class="space-y-4">
-                <div>
-                <center><label for="prod_image" class="block text-sm font-medium text-gray-700">Product Image</label>
-                </center>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                        <div class="space-y-1 text-center">
-                            <div class="flex flex-col items-center">
-                                <img id="image_preview" src="{{ $product->prod_img_url }}"
-                                    alt="Product preview" class="mb-4 w-full h-48 object-cover rounded-lg">
-                                <label for="prod_image" class="cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500">
-                                    <!-- <span>Upload a new image</span> -->
-                                    <input id="prod_image" name="prod_image" type="file" class="sr-only" accept="image/*">
-                                </label>
-                            </div>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 2MB</p>
-                        </div>
-                    </div>
-                    @error('prod_image')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                </div>
+            <div class="col mb-3">
+                <label class="form-label">Gambar</label>
+                <img src="{{ asset('uploads/'.$product->image) }}" alt="Product Image" class="img-fluid mb-2" style="max-height: 150px">
+                <input type="file" name="image" class="form-control">
             </div>
         </div>
 

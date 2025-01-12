@@ -35,10 +35,10 @@
                 @endforeach
             </select>
         </div>
-        <div class="mb-4">
-            <label for="prod_image" class="block text-sm font-medium text-gray-700">Image</label>
-            <input type="file" name="prod_image" id="prod_image" class="mt-1 block w-full">
-        </div>
+        <div class="mb-3">
+                    <label for="image" class="form-label">Gambar</label>
+                    <input type="file" name="image" class="form-control">
+                </div>
         <div class="flex justify-end">
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Add Product</button>
         </div>

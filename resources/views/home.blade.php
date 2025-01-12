@@ -24,7 +24,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($products as $product)
             <div class="bg-white rounded-lg shadow overflow-hidden">
-                <img src="{{ $product->prod_img_url }}"
+                <img src="{{ asset('uploads/'.$product->image) }}"
                      alt="{{ $product->prod_name }}"
                      class="w-full h-48 object-cover"
                      loading="lazy">
