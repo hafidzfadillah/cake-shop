@@ -6,21 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        Schema::table('tb_customer', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users');
+        Schema::create('tb_customer', function (Blueprint $table) {
+            $table->id('cust_id'); // Primary key
+            $table->string('cust_name', 255);
+            $table->string('cust_email', 255)->unique();
+            $table->string('cust_password', 255);
+            $table->string('cust_nohp', 255);
+            $table->timestamp('created_at')->useCurrent();
+            $table->unsignedBigInteger('user_id')->nullable();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::table('tb_customer', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-        });
+        Schema::dropIfExists('tb_customer');
     }
 };

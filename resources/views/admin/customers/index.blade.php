@@ -43,22 +43,29 @@
                     $found = false;
                 @endphp
                 @foreach($customers as $customer)
-                    @if(request('search') && !str_contains($customer->cust_name, request('search')))
-                        @continue
-                    @endif
-                    @php
-                        $found = true;
-                    @endphp
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">{{ $customer->cust_name }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $customer->cust_email }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">{{ $customer->cust_nohp }}</td>
                         <td class="px-6 py-4 whitespace-nowrap space-x-4">
-                            <a href="#" class="text-blue-500 hover:text-blue-700">Edit</a>
-                            <a href="#" class="text-red-500 hover:text-red-700">Delete</a>
+                            <!-- Link Edit -->
+                            <a href="{{ route('admin.customers.edit', $customer->cust_id) }}" 
+                            class="text-blue-500 hover:text-blue-700">
+                            Edit
+                            </a>
+
+                            <!-- Form Delete -->
+                            <form action="{{ route('admin.customers.destroy', $customer->cust_id) }}" method="POST" class="inline-block"
+                                onsubmit="return confirm('Are you sure you want to delete this customer?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                            </form>
+
                         </td>
                     </tr>
                 @endforeach
+
 
                 @if(!$found)
                     <tr>
