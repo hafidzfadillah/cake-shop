@@ -13,11 +13,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($products as $product)
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    @if($product->prod_img_url)
-                        <img src="{{ $product->prod_img_url }}"
-                             alt="{{ $product->prod_name }}"
-                             class="w-full h-48 object-cover"
-                             loading="lazy">
+                    @if($product->image)
+                    <img src="{{ asset('uploads/' . $product->image) }}" alt="{{ $product->prod_name }}" 
+                        class="w-full h-auto object-cover" loading="lazy">
+
                     @else
                         <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
                             <span class="text-gray-500">No image</span>
