@@ -3,8 +3,16 @@
 @section('title', 'Login')
 
 @section('content')
-<div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-2xl font-bold mb-6">Login</h2>
+<div class="bg-gray-100 w-full h-screen flex items-center justify-center relative">
+    <!-- Background Rectangle with Rounded Edges -->
+    <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-4/5 h-3/5 bg-orange-100 rounded-2xl shadow-md"></div>
+    </div>
+
+    <!-- Login Box -->
+    <div class="relative max-w-md w-full bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+
 
     <form method="POST" action="{{ route('login') }}">
         @csrf

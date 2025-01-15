@@ -7,7 +7,7 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold">Manage Products</h2>
         <div class="flex justify-end space-x-4">
-            <form action="{{ route('admin.products') }}" method="GET" class="flex">
+            <form action="{{ route('admin.products.index') }}" method="GET" class="flex">
                 <input type="text"
                     name="search"
                     placeholder="Search products..."
@@ -23,57 +23,39 @@
                 Add New Product
             </a>
         </div>
-        </a>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @foreach($products as $product)
-            @php
-                $found = false;
-                if (!request('search') || str_contains($product->prod_name, request('search'))) {
-                    $found = true;
-            @endphp
-            <div class="bg-white p-6 rounded-lg shadow">
-                <div class="flex justify-center items-center">
-                    <img src="{{ asset('uploads/'.$product->image) }}" alt="{{ $product->prod_name }}" class="w-32 h-32 object-cover" loading="lazy">
+    @if($products->isEmpty())
+        <div class="text-center py-8">
+            <p class="text-gray-500 text-lg">No products found</p>
+        </div>
+    @else
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($products as $product)
+            <div class="bg-white p-6 rounded-lg shadow product-card">
+                <div class="flex justify-center items-center mb-4">
+                    <img src="{{ asset('uploads/' . $product->image) }}" alt="{{ $product->prod_name }}" class="product-image">
                 </div>
-                <h3 class="font-bold text-lg mb-2">{{ $product->prod_name }}</h3>
-                <div class="mb-2">
+                <h3 class="font-bold text-lg mb-2 text-center">{{ $product->prod_name }}</h3>
+                <div class="mb-2 text-center">
                     <span class="text-gray-600">Price:</span>
                     <span class="font-medium">Rp {{ number_format($product->prod_price) }}</span>
                 </div>
-                <div class="mb-4">
+                <div class="mb-4 text-center">
                     <span class="text-gray-600">Stock:</span>
                     <span class="font-medium">{{ $product->prod_stock }}</span>
                 </div>
-                <div class="flex space-x-4">
-                    <a href="{{ route('admin.products.edit', $product->prod_id) }}"
-                       class="text-blue-500 hover:text-blue-700">Edit</a>
-
-                    <form action="{{ route('admin.products.destroy', $product->prod_id) }}"
-                          method="POST"
-                          class="inline-block"
-                          onsubmit="return confirm('Are you sure you want to delete this product?');">
+                <div class="flex justify-center space-x-4">
+                    <a href="{{ route('admin.products.edit', $product->prod_id) }}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                    <form action="{{ route('admin.products.destroy', $product->prod_id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this product?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit"
-                                class="text-red-500 hover:text-red-700">
-                            Delete
-                        </button>
+                        <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
                     </form>
                 </div>
             </div>
-            @php
-                }
-                if (!$found && $loop->last) {
-            @endphp
-                <div class="col-span-3 text-center py-8">
-                    <p class="text-gray-500 text-lg">No results found</p>
-                </div>
-            @php
-                }
-            @endphp
-        @endforeach
-    </div>
+            @endforeach
+        </div>
+    @endif
 </div>
 @endsection

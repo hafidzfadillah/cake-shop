@@ -42,14 +42,21 @@ Route::get('/products/{id}', [ProductController::class, 'show'])->name('products
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/products', [AdminProductController::class, 'index'])->name('admin.products');
+    
+    // Product Routes
+    Route::get('/products', [AdminProductController::class, 'index'])->name('admin.products.index'); // Perbaikan nama rute
     Route::get('/products/create', [AdminProductController::class, 'create'])->name('admin.products.create');
     Route::post('/products', [AdminProductController::class, 'store'])->name('admin.products.store');
     Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('admin.products.edit');
     Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('admin.products.update');
     Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('admin.products.destroy');
+
+    // Transaction Routes
     Route::get('/transactions', [AdminTransactionController::class, 'index'])->name('admin.transactions');
-    Route::get('/transactions/{id}', [AdminTransactionController::class, 'show'])->name('admin.transactions.show'); 
+    Route::get('/transactions/{id}', [AdminTransactionController::class, 'show'])->name('admin.transactions.show');
     Route::post('/transactions/{id}/update-status', [AdminTransactionController::class, 'updateStatus'])->name('admin.transactions.updateStatus');
+
+    // Customer Routes
     Route::get('/customers', [AdminCustomerController::class, 'index'])->name('admin.customers');
 });
+

@@ -1,0 +1,27 @@
+.product-image {
+    object-fit: cover; /* Menjaga proporsi gambar */
+    width: 100%; /* Gambar memenuhi kontainer */
+    max-width: 250px; /* Batas lebar gambar */
+    max-height: 200px; /* Batas tinggi gambar */
+    border-radius: 8px; /* Sudut gambar membulat */
+    background-color: #f9f9f9; /* Opsional: latar belakang */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Bayangan lembut */
+}
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px;
+    border: 1px solid #e2e8f0; /* Border ringan */
+    border-radius: 8px; /* Sudut membulat */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Bayangan */
+    background-color: #ffffff; /* Warna latar belakang putih */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px); /* Efek melayang */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Bayangan lebih besar saat hover */
+}
