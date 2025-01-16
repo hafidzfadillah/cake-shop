@@ -28,7 +28,9 @@ class AdminController extends Controller
             $totalProducts = Product::count();
             Log::debug('Total products: ' . $totalProducts);
 
-            $totalCustomers = Customer::count();
+            $totalCustomers = Customer::whereHas('user', function($query) {
+                $query->where('is_admin', false);
+            })->count();
             Log::debug('Total customers: ' . $totalCustomers);
 
             // Get recent transactions
