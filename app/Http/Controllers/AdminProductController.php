@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class AdminProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
+        // $products = Product::all();
+        $query = Product::query();
+
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where('prod_name', 'LIKE', "%{$search}%");
+        }
+
+        $products = $query->get();
         return view('admin.products.index', compact('products'));
     }
 
@@ -24,36 +33,37 @@ class AdminProductController extends Controller
     {
         $request->validate([
             'prod_name' => 'required|string|max:255',
-            'prod_desc' => 'required|string|max:65535',
-            'prod_price' => 'required|integer',
-            'prod_price_promo' => 'nullable|integer',
+            'prod_desc' => 'required|string|max:255',
+            'prod_price' => 'required|numeric',
+            'prod_price_promo' => 'nullable|numeric',
             'prod_stock' => 'required|integer',
             'prod_category_id' => 'required|exists:tb_prod_category,prod_category_id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'prod_image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        $input = $request->all();
+        try{
+            $uploadedFile = cloudinary()->upload($request->file('prod_image')->getRealPath(), [
+                'folder'=>'cake-shop/products'
+            ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads'), $imageName);
-            $input['image'] = $imageName;
+            // Create product with all data including the Cloudinary URL
+            $product = Product::create([
+                'prod_name' => $request->prod_name,
+                'prod_desc' => $request->prod_desc,
+                'prod_price' => $request->prod_price,
+                'prod_price_promo' => $request->prod_price_promo,
+                'prod_stock' => $request->prod_stock,
+                'prod_img_url' => $uploadedFile->getSecurePath(),
+                'prod_category_id' => $request->prod_category_id,
+                'cloudinary_public_id' => $uploadedFile->getPublicId() // Store this for future deletion
+            ]);
+
+            $product->save();
+
+            return redirect()->route('admin.products.index')->with('success', 'Product added successfully.');
+        } catch(\Exception $e) {
+            return redirect()->route('admin.products.create')->with('error', $e->getMessage());
         }
-
-        // Simpan data ke tabel `tb_product`
-        Product::create([
-            'prod_name' => $input['prod_name'],
-            'prod_desc' => $input['prod_desc'],
-            'prod_price' => $input['prod_price'],
-            'prod_price_promo' => $input['prod_price_promo'] ?? null,
-            'prod_stock' => $input['prod_stock'],
-            'prod_category_id' => $input['prod_category_id'],
-            'image' => $input['image'],
-        ]);
-
-        return redirect()->route('admin.products.index')->with('success', 'Product added successfully');
     }
 
     public function edit($id)
@@ -63,32 +73,43 @@ class AdminProductController extends Controller
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'prod_name' => 'required|string|max:255',
-            'prod_desc' => 'required|string|max:65535',
-            'prod_price' => 'required|integer',
-            'prod_price_promo' => 'nullable|integer',
+            'prod_desc' => 'required|string|max:255',
+            'prod_price' => 'required|numeric',
+            'prod_price_promo' => 'nullable|numeric',
             'prod_stock' => 'required|integer',
             'prod_category_id' => 'required|exists:tb_prod_category,prod_category_id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'prod_image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ]);
 
-        $product = Product::findOrFail($id);
-        $input = $request->all();
+        try{
+            $product = Product::findOrFail($id);
+            $product->fill($request->except('prod_image'));
 
-        // Handle image upload (optional)
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads'), $imageName);
-            $input['image'] = $imageName;
+            if ($request->hasFile('prod_image')) {
+                // Delete old image if exists
+                if ($product->cloudinary_public_id) {
+                    cloudinary()->destroy($product->cloudinary_public_id);
+                }
+
+                // Upload new image
+                $uploadedFile = cloudinary()->upload($request->file('prod_image')->getRealPath(), [
+                    'folder' => 'cake-shop/products'
+                ]);
+
+                $product['prod_img_url'] = $uploadedFile->getSecurePath();
+                $product['cloudinary_public_id'] = $uploadedFile->getPublicId();
+            }
+
+            $product->update($request->all());
+
+            return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
+        } catch(\Exception $e) {
+            return redirect()->route('admin.products.edit',$id)->with('error', $e->getMessage());
         }
-
-        $product->update($input);
-
-        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
     }
 
     public function destroy($id)
@@ -100,15 +121,8 @@ class AdminProductController extends Controller
 
     public function filter(Request $request)
     {
-        $products = Product::query();
-
-        if ($request->filled('search')) {
-            $products = $products->where('prod_name', 'like', '%' . $request->search . '%');
-        }
-
-        $products = $products->get();
+        $products = Product::filter($request->all())->get();
         $search = $request->search ?? null;
-
         return view('admin.products.index', compact('products', 'search'));
     }
 }

@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-6">
     <h2 class="text-2xl font-bold mb-6 text-gray-800">Filter Transactions</h2>
     <form action="{{ route('admin.transactions') }}" method="GET" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search by Customer Name</label>
                 <input type="text"
@@ -14,7 +14,7 @@
                     id="search"
                     placeholder="Enter customer name..."
                     value="{{ request('search') }}"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
             </div>
             <div>
                 <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Filter by Date</label>
@@ -22,13 +22,13 @@
                     name="date"
                     id="date"
                     value="{{ request('date') }}"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
             </div>
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
                 <select name="status"
                     id="status"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2">
                     <option value="">All Status</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
@@ -64,22 +64,9 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                @php
-                    $found = false;
-                @endphp
+
                 @foreach($transactions as $transaction)
-                    @if(request('search') && !str_contains($transaction->customer->cust_name, request('search')))
-                        @continue
-                    @endif
-                    @if(request('date') && $transaction->created_at->format('Y-m-d') != request('date'))
-                        @continue
-                    @endif
-                    @if(request('status') && $transaction->transaction_status != request('status'))
-                        @continue
-                    @endif
-                    @php
-                        $found = true;
-                    @endphp
+
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div>
@@ -94,7 +81,7 @@
                                 @csrf
                                 <select name="transaction_status"
                                         onchange="this.form.submit()"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-2
                                         {{ $transaction->transaction_status == 'pending' ? 'bg-yellow-50 text-yellow-600' : '' }}
                                         {{ $transaction->transaction_status == 'completed' ? 'bg-green-50 text-green-600' : '' }}
                                         {{ $transaction->transaction_status == 'cancelled' ? 'bg-red-50 text-red-600' : '' }}">
@@ -116,14 +103,7 @@
                     </tr>
                 @endforeach
 
-                @if(!$found)
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                            No transactions found matching the filters
-                        </td>
-                    </tr>
-                @endif
-            </tbody>
+                </tbody>
         </table>
     </div>
 </div>

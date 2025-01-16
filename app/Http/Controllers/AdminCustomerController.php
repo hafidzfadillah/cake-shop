@@ -8,9 +8,16 @@ use Illuminate\Http\Request;
 class AdminCustomerController extends Controller
 {
     // Menampilkan daftar pelanggan
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::all();
+        $query = Customer::query();
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $query->where('cust_name', 'LIKE', "%{$search}%")
+            ->orWhere('cust_email', 'LIKE', "%{$search}%")
+            ->orWhere('cust_nohp', 'LIKE', "%{$search}%");
+        }
+        $customers = $query->orderBy('cust_name','desc')->get();
         return view('admin.customers.index', compact('customers'));
     }
 

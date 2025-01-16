@@ -25,10 +25,17 @@
 
                     <div class="space-y-2 mb-4">
                         @foreach($transaction->transactionItems as $item)
+                            @if($item->product)
                             <div class="flex justify-between text-sm">
                                 <span>{{ $item->product->prod_name }} (x{{ $item->qty }})</span>
                                 <span>Rp {{ number_format($item->unit_price * $item->qty) }}</span>
                             </div>
+                            @else
+                            <div class="flex justify-between text-sm">
+                                <span>This product is no longer available</span>
+                                <span>Rp 0</span>
+                            </div>
+                            @endif
                         @endforeach
                     </div>
 

@@ -16,8 +16,8 @@ class Product extends Model
 
     protected $fillable = [
         'prod_name', 'prod_desc', 'prod_price', 'prod_price_promo',
-        'prod_stock', 'image',  'prod_category_id',
-        'created_at', 'deleted_at', 'cloudinary_public_id', 
+        'prod_stock', 'prod_img_url',  'prod_category_id',
+        'created_at', 'deleted_at', 'cloudinary_public_id',
     ];
 
    public function category() {

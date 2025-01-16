@@ -8,9 +8,37 @@ use Illuminate\Http\Request;
 
 class AdminTransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $transactions = Transaction::with('customer')->get();
+        $query = Transaction::with(['customer', 'transactionItems']);
+
+        if ($request->has('search')) {
+            $search = $request->get('search');
+            $dtSearch = $request->get('date');
+            $stat = $request->get('status');
+
+            if($search) {
+                $query->whereHas('customer', function($q) use ($search) {
+                    $q->whereRaw('LOWER(cust_name) LIKE ?', ["%{$search}%"])
+                      ->orWhereRaw('LOWER(cust_email) LIKE ?', ["%{$search}%"])
+                      ->orWhereRaw('cust_nohp LIKE ?', ["%{$search}%"]);
+                })
+                ->orWhereRaw('LOWER(ship_address) LIKE ?', ["%{$search}%"])
+                ->orWhere('payment_method','LIKE', "%{$search}%");
+            }
+
+            if($dtSearch) {
+                $query->where('transaction_datetime','LIKE',"%{$dtSearch}%");
+            }
+
+            if($stat) {
+                $query->where('transaction_status','LIKE',"%{$stat}%");
+            }
+        }
+
+        // $transactions = Transaction::with('customer')->get();
+        $transactions = $query->orderBy('transaction_datetime', 'desc')->get();
+
         return view('admin.transactions.index', compact('transactions'));
     }
 

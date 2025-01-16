@@ -30,16 +30,22 @@
             <p class="text-gray-500 text-lg">No products found</p>
         </div>
     @else
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($products as $product)
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        @foreach($products as $product)
             <div class="bg-white p-6 rounded-lg shadow product-card">
                 <div class="flex justify-center items-center mb-4">
-                    <img src="{{ asset('uploads/' . $product->image) }}" alt="{{ $product->prod_name }}" class="product-image">
+                    <img src="{{ $product->prod_img_url }}" alt="{{ $product->prod_name }}" class="w-auto h-48 object-cover rounded">
                 </div>
                 <h3 class="font-bold text-lg mb-2 text-center">{{ $product->prod_name }}</h3>
                 <div class="mb-2 text-center">
                     <span class="text-gray-600">Price:</span>
+                    @if($product->prod_price_promo != 0 && $product->prod_price_promo < $product->prod_price)
+                    <span class="font-medium line-through">Rp {{ number_format($product->prod_price) }}</span>
+                    <span class="font-medium text-red-600">Rp {{ number_format($product->prod_price_promo) }}</span>
+                    @else
                     <span class="font-medium">Rp {{ number_format($product->prod_price) }}</span>
+                    @endif
                 </div>
                 <div class="mb-4 text-center">
                     <span class="text-gray-600">Stock:</span>
@@ -54,7 +60,9 @@
                     </form>
                 </div>
             </div>
+
             @endforeach
+
         </div>
     @endif
 </div>

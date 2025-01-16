@@ -39,30 +39,9 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="bg-orange-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div class="flex flex-col md:flex-row items-center md:space-x-10">
-                <!-- Image Section -->
-                <div class="flex justify-center">
-                    <img src="{{ asset('assets/cakebg.png') }}" alt="Cakes" class="h-64 w-auto rounded-lg shadow-lg">
-                </div>
-                <!-- Text Section -->
-                <div class="text-center md:text-left mt-8 md:mt-0">
-                    <h1 class="text-2xl font-semibold text-gray-800">
-                        Kue Ulang Tahun, Wedding Cake, Bachelorette Cake, & Pudding
-                    </h1>
-                    <p class="mt-4 text-gray-600">
-                        Pesan cake, pudding, kue ulang tahun kekinian, wedding cake, bachelorette cake.
-                        Bisa custom dan same day delivery.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </header>
-
     <!-- Product Section -->
-    <main class="max-w-6xl mx-auto mt-6 px-4">
+    <!-- <main class="max-w-6xl mx-auto mt-6 px-4"> -->
+    <main>
         @include('components.flash-message')
         @yield('content')
     </main>

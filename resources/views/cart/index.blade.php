@@ -1,9 +1,7 @@
 @extends('layouts.app')
-
 @section('title', 'Shopping Cart')
-
 @section('content')
-<div class="bg-white rounded-lg shadow-md p-6">
+<div class="max-w-6xl mx-auto bg-white rounded-lg mt-6 px-4 ">
     <h2 class="text-2xl font-bold mb-6">Shopping Cart</h2>
 
     @if($cartItems->count() > 0)
@@ -12,7 +10,7 @@
                 <div class="flex items-center justify-between border-b pb-4">
                     <div class="flex items-center space-x-4 relative">
                         @if($item->product)
-                            <img src="{{ asset('uploads/'.$item->product->image) }}"
+                            <img src="{{ $item->product->prod_img_url }}"
                                  alt="{{ $item->product->prod_name }}"
                                  class="w-20 h-20 object-cover rounded"
                                  loading="lazy">
@@ -93,3 +91,4 @@
         </div>
     @endif
 </div>
+@endsection

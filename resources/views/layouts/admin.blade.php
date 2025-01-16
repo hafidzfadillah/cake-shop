@@ -50,7 +50,8 @@
     </nav>
 
     <!-- Main Content -->
-    <main>
+    <main class="max-w-6xl mx-auto mt-6 px-4">
+        @include('components.flash-message')
         @yield('content')
     </main>
 </body>

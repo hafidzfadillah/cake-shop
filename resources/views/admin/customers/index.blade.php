@@ -3,9 +3,10 @@
 @section('title', 'Manage Customers')
 
 @section('content')
+
 <div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold">Filter Customers</h2>
+<div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold">Manage Customers</h2>
         <div class="flex space-x-4">
             <form action="{{ route('admin.customers') }}" method="GET" class="flex">
                 <input type="text"
@@ -24,10 +25,6 @@
             </a>
         </div>
     </div>
-</div>
-
-<div class="container mx-auto px-4 py-6">
-    <h2 class="text-2xl font-bold mb-6">Manage Customers</h2>
     <div class="overflow-x-auto shadow-md rounded-lg">
         <table class="min-w-full bg-white">
             <thead class="bg-gray-100">
@@ -39,9 +36,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                @php
-                    $found = false;
-                @endphp
+
                 @foreach($customers as $customer)
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4 whitespace-nowrap">{{ $customer->cust_name }}</td>
@@ -49,7 +44,7 @@
                         <td class="px-6 py-4 whitespace-nowrap">{{ $customer->cust_nohp }}</td>
                         <td class="px-6 py-4 whitespace-nowrap space-x-4">
                             <!-- Link Edit -->
-                            <a href="{{ route('admin.customers.edit', $customer->cust_id) }}" 
+                            <a href="{{ route('admin.customers.edit', $customer->cust_id) }}"
                             class="text-blue-500 hover:text-blue-700">
                             Edit
                             </a>
@@ -65,15 +60,6 @@
                         </td>
                     </tr>
                 @endforeach
-
-
-                @if(!$found)
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                            No customers found matching the search
-                        </td>
-                    </tr>
-                @endif
             </tbody>
         </table>
     </div>

@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('title', 'Edit Product')
 @section('content')
-<div class="container mx-auto px-4 py-6">
+<div class="relative bg-white rounded-lg shadow-lg mx-4 p-6">
     <h2 class="text-2xl font-bold mb-6">Edit Product</h2>
     <form action="{{ route('admin.products.update', $product->prod_id) }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -79,8 +79,8 @@
 
             <div class="col mb-3">
                 <label class="form-label">Gambar</label>
-                <img src="{{ asset('uploads/'.$product->image) }}" alt="Product Image" class="img-fluid mb-2" style="max-height: 150px">
-                <input type="file" name="image" class="form-control">
+                <img src="{{ $product->prod_img_url }}" alt="Product Image" class="img-fluid mb-2" style="max-height: 150px">
+                <input type="file" name="prod_image" class="form-control">
             </div>
         </div>
 
@@ -90,7 +90,7 @@
                 Cancel
             </a>
             <button type="submit"
-                class="bg-blue-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                class="bg-blue-500 text-white px-4 py-2 rounded-md">
                 Update Product
             </button>
         </div>
