@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tb_customer', function (Blueprint $table) {
+        Schema::table('tb_customer', function (Blueprint $table) {
             // $table->id('cust_id'); // Primary key
             // $table->string('cust_name', 255);
             // $table->string('cust_email', 255)->unique();
